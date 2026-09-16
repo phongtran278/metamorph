@@ -18,11 +18,11 @@
         <div class="kicker">PDF Metadata Utility</div>
         <h1><span>Change the data.</span><span class="hero-accent">Keep the document.</span></h1>
       </div>
-      <p class="hero-copy">Bring your metadata and the matching PDFs. MetaMorph checks each filename, shows you what will change, then creates new files without touching the originals.</p>
+      <p class="hero-copy">Paste a Google Docs link and add the matching PDFs. MetaMorph reads the metadata, checks every filename, and creates new files without touching your originals.</p>
     </section>
 
     <section class="how-it-works glass-panel" aria-label="How MetaMorph works">
-      <div class="how-step"><strong>1</strong><span>Prepare metadata</span><small>One metadata block for each PDF.</small></div>
+      <div class="how-step"><strong>1</strong><span>Paste Google Docs link</span><small>One metadata block for each PDF.</small></div>
       <div class="how-arrow">→</div>
       <div class="how-step"><strong>2</strong><span>Add PDFs</span><small>Filenames should match the FILE values.</small></div>
       <div class="how-arrow">→</div>
@@ -32,30 +32,28 @@
     <section class="workspace">
       <article class="card glass-panel active">
         <div class="card-top">
-          <span class="step">01 · Metadata source</span>
+          <span class="step">01 · Google Docs metadata</span>
           <span class="dot"></span>
         </div>
 
-        <div class="source-switch" aria-label="Metadata source type">
-          <button class="source-option selected" type="button" aria-pressed="true">TXT file</button>
-          <button class="source-option" type="button" disabled title="Google Docs support is coming soon">Google Docs <span>Coming soon</span></button>
+        <h2>Paste your metadata doc.</h2>
+        <p id="metadata-description">Use a normal Google Docs sharing link. Set the document to <strong>Anyone with the link · Viewer</strong> so MetaMorph can read it.</p>
+
+        <div class="doc-link-box">
+          <label for="google-doc-url">Google Docs link</label>
+          <div class="doc-link-row">
+            <input id="google-doc-url" type="url" inputmode="url" autocomplete="off" placeholder="https://docs.google.com/document/d/.../edit" />
+            <button id="metadata-button" class="primary" type="button">Load metadata</button>
+          </div>
+          <span id="metadata-format" class="format">Waiting for link</span>
         </div>
 
-        <h2>Bring the metadata.</h2>
-        <p id="metadata-description">Upload a TXT file containing one metadata block for each PDF. The <code>FILE:</code> value is used to match the correct PDF.</p>
-
         <div class="format-example" aria-label="Metadata format example">
-          <span class="example-label">Example</span>
+          <span class="example-label">Inside your Google Doc</span>
           <code>FILE: brochure.pdf<br>Producer: TCPDF 6.0.095<br>CreationDate: D:20260915155702+07'00'</code>
         </div>
 
-        <div class="helper-note"><strong>Tip</strong><span>The PDF filename and <code>FILE:</code> value should be exactly the same.</span></div>
-
-        <div class="action">
-          <input id="metadata-input" type="file" accept=".txt,text/plain" hidden />
-          <button id="metadata-button" class="primary" type="button">Choose metadata file</button>
-          <span id="metadata-format" class="format">TXT</span>
-        </div>
+        <div class="helper-note"><strong>Important</strong><span>Use the regular share URL containing <code>/document/d/…/edit</code>. Published <code>/d/e/…/pub</code> links are not supported.</span></div>
       </article>
 
       <article class="card glass-panel">
@@ -64,19 +62,15 @@
           <span class="step">MULTIPLE</span>
         </div>
 
-        <div class="source-switch source-switch-placeholder" aria-hidden="true">
-          <span class="source-placeholder">Select one or many PDFs at once</span>
-        </div>
-
         <h2>Add the matching PDFs.</h2>
-        <p id="pdf-description">Choose the PDF files referenced in your metadata source. You can select multiple PDFs in one go.</p>
+        <p id="pdf-description">Choose the PDF files referenced in your Google Doc. You can select multiple PDFs in one go.</p>
 
         <div class="pdf-guide">
           <div><strong>Keep originals safe</strong><span>MetaMorph creates new <code>_final.pdf</code> files.</span></div>
           <div><strong>Match by filename</strong><span><code>brochure.pdf</code> must match <code>FILE: brochure.pdf</code>.</span></div>
         </div>
 
-        <div class="helper-note"><strong>Private</strong><span>PDF processing happens in your browser. Files are not uploaded to MetaMorph.</span></div>
+        <div class="helper-note"><strong>Private</strong><span>PDF processing happens in your browser. Your PDFs are not uploaded to MetaMorph.</span></div>
 
         <div class="action">
           <input id="pdf-input" type="file" accept="application/pdf,.pdf" multiple hidden />
@@ -90,7 +84,7 @@
       <div class="status-icon">✓</div>
       <div>
         <strong id="status-title">Nothing changes until you confirm.</strong>
-        <span id="status-copy">Upload both sources to preview matching metadata.</span>
+        <span id="status-copy">Load the Google Doc and choose PDFs to preview matches.</span>
       </div>
       <div id="status-badge" class="ready">Ready</div>
     </section>
@@ -100,7 +94,7 @@
         <div>
           <span class="step">03 · Review</span>
           <h2>Check the matches.</h2>
-          <p id="review-summary">MetaMorph will match PDF filenames against the metadata file before processing.</p>
+          <p id="review-summary">MetaMorph matches PDF filenames against the Google Docs metadata before processing.</p>
         </div>
         <button id="clear-button" class="text-button" type="button">Clear all</button>
       </div>
