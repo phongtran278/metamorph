@@ -8,35 +8,60 @@
 </head>
 <body>
   <main class="shell">
+    <nav class="nav glass-panel">
+      <div class="brand">MetaMorph</div>
+      <div class="nav-note">PDF metadata, under your control.</div>
+    </nav>
+
     <section class="hero">
-      <span class="eyebrow">PDF metadata tool</span>
-      <h1>MetaMorph</h1>
-      <p>Rewrite PDF metadata with a clean, controlled workflow.</p>
+      <div>
+        <div class="kicker">PDF Metadata Utility</div>
+        <h1>Change the data.<br><em>Keep the document.</em></h1>
+      </div>
+      <p class="hero-copy">Upload your metadata source and PDFs. MetaMorph matches each file, lets you review what changes, then rewrites only what you choose.</p>
     </section>
 
     <section class="workspace">
-      <article class="upload-card">
-        <span class="step">01</span>
-        <h2>Metadata source</h2>
-        <p>Upload the text file containing metadata for your PDFs.</p>
-        <button type="button">Choose metadata file</button>
+      <article class="card glass-panel active">
+        <div class="card-top">
+          <span class="step">01 · Metadata source</span>
+          <span class="dot"></span>
+        </div>
+        <h2>Bring the metadata.</h2>
+        <p>Upload the text file containing the original metadata set you want to apply.</p>
+        <div class="action">
+          <button class="primary" type="button">Choose metadata file</button>
+          <span class="format">TXT</span>
+        </div>
       </article>
 
-      <article class="upload-card">
-        <span class="step">02</span>
-        <h2>PDF files</h2>
-        <p>Select the PDFs you want MetaMorph to process.</p>
-        <button type="button">Choose PDF files</button>
+      <article class="card glass-panel">
+        <div class="card-top">
+          <span class="step">02 · PDF files</span>
+          <span class="step">MULTIPLE</span>
+        </div>
+        <h2>Drop your PDFs.</h2>
+        <p>Select one or many PDF files. MetaMorph will match each file with its metadata before anything is changed.</p>
+        <div class="action">
+          <button class="secondary" type="button">Choose PDF files</button>
+          <span class="format">PDF</span>
+        </div>
       </article>
     </section>
 
-    <section class="status-card">
+    <section class="status glass-panel">
+      <div class="status-icon">✓</div>
       <div>
-        <span class="status-dot"></span>
-        <strong>Ready to begin</strong>
+        <strong>Nothing changes until you confirm.</strong>
+        <span>Upload both sources to preview matching metadata.</span>
       </div>
-      <p>Upload both sources to preview matching metadata before processing.</p>
+      <div class="ready">Ready</div>
     </section>
+
+    <footer class="footer">
+      <span>MetaMorph · Built with the PlotFlow visual language</span>
+      <span>Local preview</span>
+    </footer>
   </main>
   <script src="app.js"></script>
 </body>
