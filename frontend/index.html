@@ -28,10 +28,11 @@
           <span class="dot"></span>
         </div>
         <h2>Bring the metadata.</h2>
-        <p>Upload the text file containing the original metadata set you want to apply.</p>
+        <p id="metadata-description">Upload the text file containing the original metadata set you want to apply.</p>
         <div class="action">
-          <button class="primary" type="button">Choose metadata file</button>
-          <span class="format">TXT</span>
+          <input id="metadata-input" type="file" accept=".txt,text/plain" hidden />
+          <button id="metadata-button" class="primary" type="button">Choose metadata file</button>
+          <span id="metadata-format" class="format">TXT</span>
         </div>
       </article>
 
@@ -41,10 +42,11 @@
           <span class="step">MULTIPLE</span>
         </div>
         <h2>Drop your PDFs.</h2>
-        <p>Select one or many PDF files. MetaMorph will match each file with its metadata before anything is changed.</p>
+        <p id="pdf-description">Select one or many PDF files. MetaMorph will match each file with its metadata before anything is changed.</p>
         <div class="action">
-          <button class="secondary" type="button">Choose PDF files</button>
-          <span class="format">PDF</span>
+          <input id="pdf-input" type="file" accept="application/pdf,.pdf" multiple hidden />
+          <button id="pdf-button" class="secondary" type="button">Choose PDF files</button>
+          <span id="pdf-format" class="format">PDF</span>
         </div>
       </article>
     </section>
@@ -52,15 +54,15 @@
     <section class="status glass-panel">
       <div class="status-icon">✓</div>
       <div>
-        <strong>Nothing changes until you confirm.</strong>
-        <span>Upload both sources to preview matching metadata.</span>
+        <strong id="status-title">Nothing changes until you confirm.</strong>
+        <span id="status-copy">Upload both sources to preview matching metadata.</span>
       </div>
-      <div class="ready">Ready</div>
+      <div id="status-badge" class="ready">Ready</div>
     </section>
 
     <footer class="footer">
       <span>MetaMorph · Built with the PlotFlow visual language</span>
-      <span>Local preview</span>
+      <span>Web app</span>
     </footer>
   </main>
   <script src="app.js"></script>
