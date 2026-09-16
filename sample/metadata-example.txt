@@ -1,0 +1,9 @@
+FILE: example.pdf
+Title:
+Author:
+Subject:
+Keywords:
+Creator:
+Producer: TCPDF 6.0.095 (http://www.tcpdf.org)
+CreationDate: D:20260915155702+07'00'
+ModDate: D:20260915155702+07'00'
