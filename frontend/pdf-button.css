@@ -1,0 +1,21 @@
+#pdf-button.secondary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid rgba(15, 122, 100, 0.28);
+  box-shadow: 0 8px 20px rgba(15, 122, 100, 0.16), inset 0 1px 0 rgba(255,255,255,.18);
+  min-height: 42px;
+  padding-inline: 18px;
+}
+
+#pdf-button.secondary:hover {
+  background: #0c6d59;
+}
+
+#pdf-button.secondary:active {
+  transform: scale(.98);
+}
+
+#pdf-format {
+  color: var(--accent);
+  font-weight: 700;
+}
