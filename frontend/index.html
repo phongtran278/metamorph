@@ -60,11 +60,35 @@
       <div id="status-badge" class="ready">Ready</div>
     </section>
 
+    <section id="review-panel" class="review glass-panel" hidden>
+      <div class="review-head">
+        <div>
+          <span class="step">03 · Review</span>
+          <h2>Check the matches.</h2>
+          <p id="review-summary">MetaMorph will match PDF filenames against the metadata file before processing.</p>
+        </div>
+        <button id="clear-button" class="text-button" type="button">Clear all</button>
+      </div>
+
+      <div id="file-list" class="file-list" aria-live="polite"></div>
+
+      <div class="review-footer">
+        <div class="privacy-note">
+          <strong>Processed in your browser.</strong>
+          <span>Your PDFs stay on this device.</span>
+        </div>
+        <button id="process-button" class="process-button" type="button" disabled>Process files</button>
+      </div>
+    </section>
+
     <footer class="footer">
       <span>MetaMorph · Built with the PlotFlow visual language</span>
       <span>Web app</span>
     </footer>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
