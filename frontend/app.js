@@ -1,4 +1,4 @@
-const metadataInput = document.querySelector('#metadata-input');
+const googleDocUrlInput = document.querySelector('#google-doc-url');
 const pdfInput = document.querySelector('#pdf-input');
 const metadataButton = document.querySelector('#metadata-button');
 const pdfButton = document.querySelector('#pdf-button');
@@ -15,10 +15,11 @@ const fileList = document.querySelector('#file-list');
 const clearButton = document.querySelector('#clear-button');
 const processButton = document.querySelector('#process-button');
 
-let metadataFile = null;
+let googleDocUrl = '';
 let pdfFiles = [];
 let metadataMap = new Map();
 let processing = false;
+let loadingMetadata = false;
 
 const normalizeFilename = (name) => name.trim().toLowerCase();
 
@@ -39,7 +40,6 @@ function parseMetadataText(text) {
     }
 
     if (!current) continue;
-
     const separator = line.indexOf(':');
     if (separator < 0) continue;
 
@@ -56,14 +56,7 @@ function parsePdfDate(value) {
   const match = value.match(/^D:(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
   if (!match) return null;
   const [, year, month, day, hour, minute, second] = match;
-  return new Date(Date.UTC(
-    Number(year),
-    Number(month) - 1,
-    Number(day),
-    Number(hour),
-    Number(minute),
-    Number(second),
-  ));
+  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second)));
 }
 
 function getMatch(file) {
@@ -76,7 +69,7 @@ function getMatchStats() {
 }
 
 function renderReview() {
-  if (!metadataFile || pdfFiles.length === 0) {
+  if (metadataMap.size === 0 || pdfFiles.length === 0) {
     reviewPanel.hidden = true;
     processButton.disabled = true;
     fileList.innerHTML = '';
@@ -105,7 +98,7 @@ function renderReview() {
     const detail = document.createElement('span');
     detail.textContent = match
       ? `Producer: ${match.metadata.Producer || '—'} · CreationDate: ${match.metadata.CreationDate || '—'}`
-      : 'No matching FILE entry found in the metadata source.';
+      : 'No matching FILE entry found in the Google Doc.';
 
     info.append(name, detail);
 
@@ -121,17 +114,19 @@ function renderReview() {
 }
 
 function updateStatus() {
-  if (metadataFile && pdfFiles.length > 0) {
+  const hasMetadata = metadataMap.size > 0;
+
+  if (hasMetadata && pdfFiles.length > 0) {
     const { matched, total, missing } = getMatchStats();
     statusTitle.textContent = missing === 0 ? 'Everything is matched.' : 'Review the file matches.';
-    statusCopy.textContent = `${matched}/${total} PDFs matched to metadata.`;
+    statusCopy.textContent = `${matched}/${total} PDFs matched to Google Docs metadata.`;
     statusBadge.textContent = missing === 0 ? 'Ready to process' : `${missing} missing`;
     renderReview();
     return;
   }
 
-  if (metadataFile) {
-    statusTitle.textContent = 'Metadata source loaded.';
+  if (hasMetadata) {
+    statusTitle.textContent = 'Google Docs metadata loaded.';
     statusCopy.textContent = `${metadataMap.size} metadata record${metadataMap.size === 1 ? '' : 's'} found. Now choose your PDFs.`;
     statusBadge.textContent = '1 of 2';
     renderReview();
@@ -140,52 +135,70 @@ function updateStatus() {
 
   if (pdfFiles.length > 0) {
     statusTitle.textContent = `${pdfFiles.length} PDF${pdfFiles.length === 1 ? '' : 's'} loaded.`;
-    statusCopy.textContent = 'Now choose the metadata text file.';
+    statusCopy.textContent = 'Now paste and load the Google Docs metadata link.';
     statusBadge.textContent = '1 of 2';
     renderReview();
     return;
   }
 
   statusTitle.textContent = 'Nothing changes until you confirm.';
-  statusCopy.textContent = 'Upload both sources to preview matching metadata.';
+  statusCopy.textContent = 'Load the Google Doc and choose PDFs to preview matches.';
   statusBadge.textContent = 'Ready';
   renderReview();
 }
 
-async function loadMetadata(file) {
-  const text = await file.text();
-  metadataMap = parseMetadataText(text);
-  if (metadataMap.size === 0) {
-    throw new Error('No FILE: entries were found in this metadata file.');
+async function loadGoogleDocMetadata() {
+  const url = googleDocUrlInput.value.trim();
+  if (!url) throw new Error('Paste a Google Docs link first.');
+
+  loadingMetadata = true;
+  metadataButton.disabled = true;
+  metadataButton.textContent = 'Loading…';
+  metadataFormat.textContent = 'Reading doc';
+  statusTitle.textContent = 'Reading Google Docs metadata…';
+  statusCopy.textContent = 'This usually takes only a moment.';
+  statusBadge.textContent = 'Loading';
+
+  try {
+    const response = await fetch('/api/google-doc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      throw new Error(payload?.error || 'Could not read this Google Doc.');
+    }
+
+    metadataMap = parseMetadataText(payload.text || '');
+    if (metadataMap.size === 0) {
+      throw new Error('The Google Doc was read, but no FILE: entries were found.');
+    }
+
+    googleDocUrl = url;
+    metadataDescription.textContent = `${metadataMap.size} metadata record${metadataMap.size === 1 ? '' : 's'} loaded from Google Docs.`;
+    metadataFormat.textContent = `${metadataMap.size} loaded`;
+    metadataButton.textContent = 'Reload metadata';
+  } catch (error) {
+    googleDocUrl = '';
+    metadataMap = new Map();
+    metadataDescription.textContent = error.message;
+    metadataFormat.textContent = 'Could not load';
+    metadataButton.textContent = 'Try again';
+  } finally {
+    loadingMetadata = false;
+    metadataButton.disabled = false;
+    updateStatus();
   }
 }
 
-metadataButton.addEventListener('click', () => metadataInput.click());
-pdfButton.addEventListener('click', () => pdfInput.click());
-
-metadataInput.addEventListener('change', async () => {
-  metadataFile = metadataInput.files?.[0] ?? null;
-  metadataMap = new Map();
-
-  if (metadataFile) {
-    try {
-      await loadMetadata(metadataFile);
-      metadataDescription.textContent = `${metadataFile.name} · ${metadataMap.size} record${metadataMap.size === 1 ? '' : 's'}`;
-      metadataFormat.textContent = 'Selected';
-      metadataButton.textContent = 'Change metadata file';
-    } catch (error) {
-      metadataDescription.textContent = error.message;
-      metadataFormat.textContent = 'Invalid';
-      metadataButton.textContent = 'Choose another file';
-    }
-  } else {
-    metadataDescription.textContent = 'Upload the text file containing the original metadata set you want to apply.';
-    metadataFormat.textContent = 'TXT';
-    metadataButton.textContent = 'Choose metadata file';
-  }
-
-  updateStatus();
+metadataButton.addEventListener('click', loadGoogleDocMetadata);
+googleDocUrlInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !loadingMetadata) loadGoogleDocMetadata();
 });
+
+pdfButton.addEventListener('click', () => pdfInput.click());
 
 pdfInput.addEventListener('change', () => {
   pdfFiles = Array.from(pdfInput.files ?? []).filter((file) => file.name.toLowerCase().endsWith('.pdf'));
@@ -193,13 +206,11 @@ pdfInput.addEventListener('change', () => {
   if (pdfFiles.length > 0) {
     const previewNames = pdfFiles.slice(0, 3).map((file) => file.name).join(', ');
     const extraCount = Math.max(0, pdfFiles.length - 3);
-    pdfDescription.textContent = extraCount > 0
-      ? `${previewNames} + ${extraCount} more`
-      : previewNames;
+    pdfDescription.textContent = extraCount > 0 ? `${previewNames} + ${extraCount} more` : previewNames;
     pdfFormat.textContent = `${pdfFiles.length} selected`;
     pdfButton.textContent = 'Change PDF files';
   } else {
-    pdfDescription.textContent = 'Select one or many PDF files. MetaMorph will match each file with its metadata before anything is changed.';
+    pdfDescription.textContent = 'Choose the PDF files referenced in your Google Doc. You can select multiple PDFs in one go.';
     pdfFormat.textContent = 'PDF';
     pdfButton.textContent = 'Choose PDF files';
   }
@@ -208,16 +219,16 @@ pdfInput.addEventListener('change', () => {
 });
 
 clearButton.addEventListener('click', () => {
-  metadataFile = null;
+  googleDocUrl = '';
   pdfFiles = [];
   metadataMap = new Map();
-  metadataInput.value = '';
+  googleDocUrlInput.value = '';
   pdfInput.value = '';
-  metadataDescription.textContent = 'Upload the text file containing the original metadata set you want to apply.';
-  pdfDescription.textContent = 'Select one or many PDF files. MetaMorph will match each file with its metadata before anything is changed.';
-  metadataFormat.textContent = 'TXT';
+  metadataDescription.innerHTML = 'Use a normal Google Docs sharing link. Set the document to <strong>Anyone with the link · Viewer</strong> so MetaMorph can read it.';
+  pdfDescription.textContent = 'Choose the PDF files referenced in your Google Doc. You can select multiple PDFs in one go.';
+  metadataFormat.textContent = 'Waiting for link';
   pdfFormat.textContent = 'PDF';
-  metadataButton.textContent = 'Choose metadata file';
+  metadataButton.textContent = 'Load metadata';
   pdfButton.textContent = 'Choose PDF files';
   updateStatus();
 });
@@ -227,9 +238,7 @@ function applyMetadata(pdfDoc, metadata) {
   if ('Author' in metadata) pdfDoc.setAuthor(metadata.Author || '');
   if ('Subject' in metadata) pdfDoc.setSubject(metadata.Subject || '');
   if ('Keywords' in metadata) {
-    const keywords = metadata.Keywords
-      ? metadata.Keywords.split(/[,;]/).map((item) => item.trim()).filter(Boolean)
-      : [];
+    const keywords = metadata.Keywords ? metadata.Keywords.split(/[,;]/).map((item) => item.trim()).filter(Boolean) : [];
     pdfDoc.setKeywords(keywords);
   }
   if ('Creator' in metadata) pdfDoc.setCreator(metadata.Creator || '');
@@ -281,7 +290,6 @@ processButton.addEventListener('click', async () => {
       const outputBytes = await pdfDoc.save({ updateFieldAppearances: false });
       const outputName = file.name.replace(/\.pdf$/i, '_final.pdf');
       zip.file(outputName, outputBytes);
-
       statusCopy.textContent = `${index + 1}/${pdfFiles.length} complete.`;
     }
 
