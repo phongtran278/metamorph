@@ -50,11 +50,12 @@
           <span id="metadata-format" class="format">Waiting for link</span>
         </div>
 
-        <div class="format-example" aria-label="Metadata format example">
-          <span class="example-label">Inside your Google Doc</span>
-          <code>FILE: brochure.pdf<br>Producer: TCPDF 6.0.095<br>CreationDate: D:20260915155702+07'00'</code>
+        <div class="format-example" aria-label="Metadata restore fields">
+          <span class="example-label">Fields MetaMorph restores</span>
+          <code>File: brochure.pdf<br>Created: 9/15/2026 3:57:02 PM<br>Modified: 9/15/2026 3:57:02 PM<br>Application: [Không có / để trống]<br>PDF Producer: TCPDF 6.0.095</code>
         </div>
 
+        <div class="helper-note"><strong>Restore policy</strong><span>Only Created, Modified, Application and PDF Producer are changed. Any extra fields in the Google Doc are ignored.</span></div>
         <div class="helper-note"><strong>Important</strong><span>Use the regular share URL containing <code>/document/d/…/edit</code>. Published <code>/d/e/…/pub</code> links are not supported.</span></div>
       </article>
 
@@ -69,7 +70,7 @@
 
         <div class="pdf-guide">
           <div><strong>Keep originals safe</strong><span>MetaMorph creates new <code>_final.pdf</code> files.</span></div>
-          <div><strong>Match by filename</strong><span><code>brochure.pdf</code> must match <code>FILE: brochure.pdf</code>.</span></div>
+          <div><strong>Match by filename</strong><span><code>brochure.pdf</code> must match <code>File: brochure.pdf</code>.</span></div>
         </div>
 
         <div class="helper-note"><strong>Private</strong><span>PDF processing happens in your browser. Your PDFs are not uploaded to MetaMorph.</span></div>
@@ -121,5 +122,6 @@
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="app.js"></script>
+  <script src="metadata-policy.js"></script>
 </body>
 </html>
