@@ -23,6 +23,44 @@ let loadingMetadata = false;
 
 const normalizeFilename = (name) => name.trim().toLowerCase();
 
+const METADATA_KEY_ALIASES = {
+  title: 'Title',
+  author: 'Author',
+  subject: 'Subject',
+  keywords: 'Keywords',
+  creator: 'Creator',
+  application: 'Creator',
+  producer: 'Producer',
+  'pdf producer': 'Producer',
+  creationdate: 'CreationDate',
+  created: 'CreationDate',
+  moddate: 'ModDate',
+  modified: 'ModDate',
+};
+
+function normalizeMetadataValue(value) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) return '';
+
+  const blankMarkers = [
+    '[không có / để trống]',
+    '[khong co / de trong]',
+    '[none]',
+    '[empty]',
+    'none',
+    'null',
+    '—',
+    '-',
+  ];
+
+  return blankMarkers.includes(trimmed.toLowerCase()) ? '' : trimmed;
+}
+
+function normalizeMetadataKey(key) {
+  const canonical = String(key ?? '').trim().toLowerCase();
+  return METADATA_KEY_ALIASES[canonical] || null;
+}
+
 function parseMetadataText(text) {
   const entries = new Map();
   let current = null;
@@ -34,7 +72,7 @@ function parseMetadataText(text) {
     if (/^FILE\s*:/i.test(line)) {
       const filename = line.replace(/^FILE\s*:/i, '').trim();
       if (!filename) continue;
-      current = { filename, metadata: {} };
+      current = { filename, metadata: {}, rawMetadata: {} };
       entries.set(normalizeFilename(filename), current);
       continue;
     }
@@ -43,9 +81,14 @@ function parseMetadataText(text) {
     const separator = line.indexOf(':');
     if (separator < 0) continue;
 
-    const key = line.slice(0, separator).trim();
-    const value = line.slice(separator + 1).trim();
-    current.metadata[key] = value;
+    const rawKey = line.slice(0, separator).trim();
+    const rawValue = line.slice(separator + 1).trim();
+    current.rawMetadata[rawKey] = rawValue;
+
+    const normalizedKey = normalizeMetadataKey(rawKey);
+    if (!normalizedKey) continue;
+
+    current.metadata[normalizedKey] = normalizeMetadataValue(rawValue);
   }
 
   return entries;
@@ -53,10 +96,35 @@ function parseMetadataText(text) {
 
 function parsePdfDate(value) {
   if (!value) return null;
-  const match = value.match(/^D:(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
-  if (!match) return null;
-  const [, year, month, day, hour, minute, second] = match;
-  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second)));
+  const text = String(value).trim();
+
+  const pdfMatch = text.match(/^D:(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+  if (pdfMatch) {
+    const [, year, month, day, hour, minute, second] = pdfMatch;
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute),
+      Number(second),
+    );
+  }
+
+  const usMatch = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/i);
+  if (usMatch) {
+    const [, month, day, year, hourText, minute, second = '0', meridiem] = usMatch;
+    let hour = Number(hourText);
+    if (meridiem) {
+      const upper = meridiem.toUpperCase();
+      if (upper === 'PM' && hour !== 12) hour += 12;
+      if (upper === 'AM' && hour === 12) hour = 0;
+    }
+    return new Date(Number(year), Number(month) - 1, Number(day), hour, Number(minute), Number(second));
+  }
+
+  const fallback = new Date(text);
+  return Number.isNaN(fallback.getTime()) ? null : fallback;
 }
 
 function getMatch(file) {
@@ -97,7 +165,7 @@ function renderReview() {
 
     const detail = document.createElement('span');
     detail.textContent = match
-      ? `Producer: ${match.metadata.Producer || '—'} · CreationDate: ${match.metadata.CreationDate || '—'}`
+      ? `Producer: ${match.metadata.Producer || '—'} · Created: ${match.metadata.CreationDate || '—'} · Application: ${match.metadata.Creator || '—'}`
       : 'No matching FILE entry found in the Google Doc.';
 
     info.append(name, detail);
@@ -173,7 +241,7 @@ async function loadGoogleDocMetadata() {
 
     metadataMap = parseMetadataText(payload.text || '');
     if (metadataMap.size === 0) {
-      throw new Error('The Google Doc was read, but no FILE: entries were found.');
+      throw new Error('The Google Doc was read, but no File: entries were found.');
     }
 
     googleDocUrl = url;
