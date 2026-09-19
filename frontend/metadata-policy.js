@@ -20,12 +20,11 @@ function clearInfoTitle(pdfDoc) {
 }
 
 function clearXmpTitle(xmp) {
-  // dc:title typically contains rdf:Alt / rdf:li multilingual title values.
-  // Remove the complete title element rather than leaving an empty XMP title.
+  // Remove only the unwanted dc:title element/attribute, including rdf:Alt.
   return xmp
-    .replace(/<dc:title\\b[^>]*>[\\s\\S]*?<\\/dc:title\\s*>/gi, '')
-    .replace(/<dc:title\\b[^>]*\\/\\s*>/gi, '')
-    .replace(/\\s+dc:title\\s*=\\s*(["'])[^"']*\\1/gi, '');
+    .replace(/<dc:title\b[^>]*>[\s\S]*?<\/dc:title\s*>/gi, '')
+    .replace(/<dc:title\b[^>]*\/\s*>/gi, '')
+    .replace(/\s+dc:title\s*=\s*(["'])[\s\S]*?\1/gi, '');
 }
 
 function escapeXml(value) {
