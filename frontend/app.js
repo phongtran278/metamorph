@@ -331,6 +331,12 @@ function downloadBlob(blob, filename) {
 
 processButton.addEventListener('click', async () => {
   if (processing || processButton.disabled) return;
+  if (window.MetaMorphPolicyReady !== true) {
+    statusTitle.textContent = 'Metadata restore policy did not load.';
+    statusCopy.textContent = 'Refresh the page before processing. No PDF has been changed.';
+    statusBadge.textContent = 'Error';
+    return;
+  }
   if (!window.PDFLib || !window.JSZip) {
     statusTitle.textContent = 'Processing library failed to load.';
     statusCopy.textContent = 'Refresh the page and try again.';
