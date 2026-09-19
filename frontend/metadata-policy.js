@@ -152,3 +152,6 @@ applyMetadata = function applyMetadata(pdfDoc, metadata) {
   // XMP metadata packet used by Acrobat/Affinity and other readers.
   updateXmpMetadata(pdfDoc, metadata, creationDate, modDate);
 };
+
+// Set only after the entire restore policy has parsed and loaded successfully.
+window.MetaMorphPolicyReady = true;
