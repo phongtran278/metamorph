@@ -3,6 +3,31 @@
 // We update both the PDF Info dictionary and the XMP metadata packet because
 // Acrobat/Affinity can display values from either layer.
 
+
+// A blank source Title means the original PDF had no title. Remove only
+// an unwanted Affinity-added title; never invent/overwrite a nonblank title.
+function shouldClearTitle(metadata) {
+  return Object.prototype.hasOwnProperty.call(metadata, 'Title')
+    && metadata.Title === '';
+}
+
+function clearInfoTitle(pdfDoc) {
+  const { PDFName, PDFDict } = window.PDFLib;
+  const infoRef = pdfDoc.context.trailerInfo.Info;
+  if (!infoRef) return;
+  const info = pdfDoc.context.lookup(infoRef, PDFDict);
+  if (info) info.delete(PDFName.of('Title'));
+}
+
+function clearXmpTitle(xmp) {
+  // dc:title typically contains rdf:Alt / rdf:li multilingual title values.
+  // Remove the complete title element rather than leaving an empty XMP title.
+  return xmp
+    .replace(/<dc:title\\b[^>]*>[\\s\\S]*?<\\/dc:title\\s*>/gi, '')
+    .replace(/<dc:title\\b[^>]*\\/\\s*>/gi, '')
+    .replace(/\\s+dc:title\\s*=\\s*(["'])[^"']*\\1/gi, '');
+}
+
 function escapeXml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -96,6 +121,8 @@ function updateXmpMetadata(pdfDoc, metadata, creationDate, modDate) {
     }
   }
 
+  if (shouldClearTitle(metadata)) xmp = clearXmpTitle(xmp);
+
   const stream = pdfDoc.context.stream(new TextEncoder().encode(xmp), {
     Type: 'Metadata',
     Subtype: 'XML',
@@ -109,6 +136,7 @@ applyMetadata = function applyMetadata(pdfDoc, metadata) {
   const modDate = 'ModDate' in metadata ? parsePdfDate(metadata.ModDate) : null;
 
   // PDF Info dictionary
+  if (shouldClearTitle(metadata)) clearInfoTitle(pdfDoc);
   if ('Creator' in metadata) {
     pdfDoc.setCreator(metadata.Creator || '');
   }
