@@ -76,27 +76,27 @@
         </div>
 
         <details class="metadata-guide">
-          <summary>Cách chuẩn bị Google Docs chứa metadata gốc <span aria-hidden="true">↗</span></summary>
+          <summary>Tạo Google Docs từ PDF gốc <span aria-hidden="true">↗</span></summary>
           <div class="metadata-guide-body">
-            <p><strong>Bước 1.</strong> Giữ nguyên các PDF gốc. Tải chúng lên ChatGPT và yêu cầu đọc metadata trực tiếp từ từng file; không suy đoán từ nội dung, tên file hoặc phần mềm chỉnh sửa. Nếu chỉ có ảnh chụp Properties, phải ghi rõ dữ liệu chưa đầy đủ.</p>
-            <p><strong>Bước 2.</strong> Yêu cầu ChatGPT tạo một Google Docs online chứa kết quả và trả về link. Mỗi PDF phải có một khối riêng bắt đầu bằng <code>File:</code>; giữ nguyên chính xác tên file, đuôi mở rộng, ngày giờ và múi giờ. Nếu ChatGPT không thể tạo Google Docs, hãy dán kết quả vào một Google Doc online, không cần tải file xuống.</p>
-            <p><strong>Bước 3.</strong> Sau khi sửa bằng Affinity, giữ nguyên tên từng PDF. Chia sẻ Google Doc ở chế độ <strong>Bất kỳ ai có đường liên kết · Người xem</strong>, nạp link vào MetaMorph và kiểm tra các cặp file trước khi xử lý.</p>
-            <label for="extract-prompt">Prompt tiếng Việt để sao chép vào ChatGPT</label>
-            <textarea id="extract-prompt" readonly rows="13" spellcheck="false">Tôi sẽ tải lên các file PDF GỐC. Hãy đọc metadata trực tiếp từ từng file PDF, tuyệt đối không suy đoán từ nội dung tài liệu, tên file, ảnh chụp hay phần mềm chỉnh sửa. Nếu không đọc và xác minh được một trường thông tin, hãy ghi UNVERIFIED, không tự điền giá trị.
+            <p><strong>1.</strong> Tải tất cả PDF gốc (ví dụ 10 file) lên ChatGPT cùng prompt bên dưới.</p>
+            <p><strong>2.</strong> ChatGPT đọc metadata từng PDF, tạo <strong>một Google Docs online</strong> và trả link. Mỗi file có một khối riêng, tên file giữ nguyên.</p>
+            <p><strong>3.</strong> Chỉnh PDF bằng Affinity, giữ nguyên tên file. Bật chia sẻ Google Docs: <strong>Bất kỳ ai có đường liên kết · Người xem</strong>, rồi dán link vào MetaMorph.</p>
+            <label for="extract-prompt">Prompt để sao chép vào ChatGPT</label>
+            <textarea id="extract-prompt" readonly rows="12" spellcheck="false">Tôi tải lên nhiều PDF GỐC (có thể 10 file hoặc hơn). Hãy đọc metadata TRỰC TIẾP từ từng PDF bằng công cụ đọc file; không suy đoán hay tạo dữ liệu.
 
-Với mỗi file, xuất MỘT khối văn bản riêng. Giữ nguyên CHÍNH XÁC tên file gốc và phần mở rộng .pdf. Không đổi tên, không gộp dữ liệu giữa các file. Giữ nguyên các nhãn trường dưới đây để MetaMorph nhận diện; mỗi trường một dòng, các khối cách nhau một dòng trống:
+Xuất đúng một khối cho mỗi file, giữ nguyên tên file và giá trị gốc. Mỗi khối bắt đầu bằng File: và có các nhãn sau, mỗi nhãn một dòng:
 
-File: [tên file gốc chính xác]
-Title: [giá trị metadata gốc; chỉ ghi [Không có / để trống] nếu đã xác minh trường này thực sự trống]
-Created: [ngày giờ và múi giờ gốc, nếu đọc được]
-Modified: [ngày giờ và múi giờ gốc, nếu đọc được]
-Application: [giá trị gốc; chỉ ghi [Không có / để trống] nếu đã xác minh là trống]
-PDF Producer: [giá trị gốc; chỉ ghi [Không có / để trống] nếu đã xác minh là trống]
+File: [tên PDF chính xác]
+Title: [giá trị gốc hoặc [Không có / để trống] nếu xác minh là trống]
+Created: [ngày giờ gốc; giữ múi giờ nếu có]
+Modified: [ngày giờ gốc; giữ múi giờ nếu có]
+Application: [giá trị gốc hoặc [Không có / để trống] nếu xác minh là trống]
+PDF Producer: [giá trị gốc hoặc [Không có / để trống] nếu xác minh là trống]
 
-Không dùng dữ liệu ví dụ. Nếu trường nào không thể xác minh, ghi UNVERIFIED và nêu rõ tên file cùng trường cần kiểm tra trực tiếp; không coi UNVERIFIED là giá trị metadata. Đếm tổng số PDF đầu vào và số khối đầu ra, báo tên file bị thiếu hoặc trùng. Chỉ đưa các metadata khác vào phần kiểm tra riêng nếu thực sự đọc được từ PDF gốc.
+Nếu không đọc được trường nào, KHÔNG tự điền giá trị vào khối; liệt kê trường chưa xác minh riêng để tôi kiểm tra. Kiểm tra số lượng file và khối khớp nhau, không trộn metadata giữa các PDF.
 
-Sau khi kiểm tra đầy đủ, hãy tạo trực tiếp MỘT tài liệu Google Docs ONLINE trong Google Drive của tôi, chứa toàn bộ các khối metadata trên dưới dạng văn bản thuần để MetaMorph đọc được. Không tạo file Word/DOCX/PDF, không yêu cầu tôi tải file xuống máy. Hãy trả lại đường liên kết Google Docs thật có dạng https://docs.google.com/document/d/.../edit để tôi dán thẳng vào MetaMorph. Nếu bạn không có quyền tạo Google Docs trong tài khoản của tôi, hãy nói rõ điều đó, cung cấp nội dung hoàn chỉnh để tôi dán vào một Google Doc online và KHÔNG tự tạo hoặc bịa đường liên kết. Nhắc tôi chia sẻ Google Doc ở chế độ “Bất kỳ ai có đường liên kết · Người xem” để MetaMorph có thể truy cập.</textarea>
-            <p class="metadata-guide-caution"><strong>Lưu ý về độ chính xác:</strong> Google Doc do AI trích xuất chỉ là bản ghi tham chiếu, không thay thế toàn bộ metadata trong PDF gốc. Ảnh chụp Properties không chứng minh được đầy đủ Info, XMP và các thuộc tính cấu trúc. Khớp tên file chưa có nghĩa PDF final giống PDF gốc; hãy đối chiếu hai file bằng trình kiểm tra PDF trước khi sử dụng.</p>
+Tạo MỘT Google Docs ONLINE chứa tất cả các khối trên và gửi link /document/d/.../edit thật để tôi dán vào MetaMorph; không xuất file tải xuống. Nếu không có quyền tạo Google Docs, nói rõ và đưa toàn bộ nội dung để tôi dán vào Google Docs online. Nhắc tôi bật chia sẻ “Bất kỳ ai có đường liên kết · Người xem”.</textarea>
+            <p class="metadata-guide-caution"><strong>Lưu ý:</strong> Chỉ dùng metadata đọc được từ PDF gốc. MetaMorph hiện khôi phục các trường đã hỗ trợ; muốn xác nhận toàn bộ properties giống gốc, cần đối chiếu PDF gốc và PDF final bằng trình đọc PDF.</p>
           </div>
         </details>
 
