@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="google-doc.css" />
   <link rel="stylesheet" href="pdf-button.css" />
+    <style>
+      .metadata-guide { margin: 0 0 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.68); }
+      .metadata-guide summary { cursor: pointer; padding: 14px 16px; font-size: 13px; font-weight: 650; display: flex; justify-content: space-between; gap: 12px; }
+      .metadata-guide summary::marker { color: var(--accent); }
+      .metadata-guide-body { padding: 0 16px 16px; }
+      .metadata-guide-body p { max-width: none; margin: 12px 0; font-size: 12px; }
+      .metadata-guide-body label { display: block; font-size: 12px; font-weight: 700; margin: 16px 0 8px; }
+      .metadata-guide-body textarea { width: 100%; min-height: 220px; resize: vertical; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; line-height: 1.55; }
+      .metadata-guide-body .metadata-guide-caution { padding: 12px; border-radius: 10px; background: var(--accent-soft); color: var(--ink-2); }
+    </style>
 </head>
 <body>
   <main class="shell">
@@ -50,12 +60,30 @@
           <span id="metadata-format" class="format">Waiting for link</span>
         </div>
 
-        <div class="format-example" aria-label="Metadata restore fields">
-          <span class="example-label">Fields MetaMorph restores</span>
-          <code>File: brochure.pdf<br>Created: 9/15/2026 3:57:02 PM<br>Modified: 9/15/2026 3:57:02 PM<br>Application: [Không có / để trống]<br>PDF Producer: TCPDF 6.0.095</code>
-        </div>
+        <details class="metadata-guide">
+          <summary>How to prepare your Google Doc <span aria-hidden="true">↗</span></summary>
+          <div class="metadata-guide-body">
+            <p><strong>1.</strong> Keep the original PDFs untouched. Upload the originals to ChatGPT and ask it to extract each file's PDF metadata directly, not to guess from its content or file name. If only screenshots are available, mark the result as incomplete.</p>
+            <p><strong>2.</strong> Paste the result into one Google Doc. Use a separate block starting with <code>File:</code> for every PDF. Preserve the exact filename, extension, timestamps and time zones. Never merge multiple PDFs into one block.</p>
+            <p><strong>3.</strong> After editing in Affinity, keep the PDF filenames unchanged. Share the Google Doc as <strong>Anyone with the link · Viewer</strong>, load it here, then review the matches before processing.</p>
+            <label for="extract-prompt">Copyable ChatGPT prompt</label>
+            <textarea id="extract-prompt" readonly rows="13" spellcheck="false">Read the PDF metadata of each ORIGINAL PDF I upload. Do not infer metadata from the document content, title, filename, screenshot or the editing software. If you cannot access a metadata field reliably, say UNVERIFIED instead of making up a value.
 
-        <div class="helper-note"><strong>Restore policy</strong><span>Only Created, Modified, Application and PDF Producer are changed. Any extra fields in the Google Doc are ignored.</span></div>
+Output one plain-text block per file, preserving the EXACT original filename and extension. Do not reorder, merge or rename files. Use the following labels, one per line, and separate blocks with one blank line:
+
+File: [exact original filename]
+Title: [exact metadata value, or [Không có / để trống] if VERIFIED absent]
+Created: [exact date, time and timezone if available]
+Modified: [exact date, time and timezone if available]
+Application: [exact value, or [Không có / để trống] if VERIFIED absent]
+PDF Producer: [exact value, or [Không có / để trống] if VERIFIED absent]
+
+Do not insert sample values. If a field cannot be verified, write UNVERIFIED and explain which file/field needs direct inspection. Count the input PDFs and output blocks; report missing or duplicate filenames. Keep all other source metadata in a separate audit section only if it can be read reliably.</textarea>
+            <p class="metadata-guide-caution"><strong>Accuracy note:</strong> A Google Doc extracted by AI is a reference, not a full copy of the source PDF's metadata. Screenshots cannot prove all Info, XMP and structural properties. Matching a filename does not prove the final PDF equals the original; compare the original and final in your PDF inspector before relying on them.</p>
+          </div>
+        </details>
+
+        <div class="helper-note"><strong>Restore policy</strong><span>MetaMorph restores Created, Modified, Application, PDF Producer, and clears Title only when the source record explicitly says it was blank. Other fields in the Doc are ignored.</span></div>
         <div class="helper-note"><strong>Important</strong><span>Use the regular share URL containing <code>/document/d/…/edit</code>. Published <code>/d/e/…/pub</code> links are not supported.</span></div>
       </article>
 
@@ -70,7 +98,7 @@
 
         <div class="pdf-guide">
           <div><strong>Keep originals safe</strong><span>MetaMorph creates new <code>_final.pdf</code> files.</span></div>
-          <div><strong>Match by filename</strong><span><code>brochure.pdf</code> must match <code>File: brochure.pdf</code>.</span></div>
+          <div><strong>Match by filename</strong><span>Each edited PDF filename must exactly match its <code>File:</code> entry in the Google Doc.</span></div>
         </div>
 
         <div class="helper-note"><strong>Private</strong><span>PDF processing happens in your browser. Your PDFs are not uploaded to MetaMorph.</span></div>
