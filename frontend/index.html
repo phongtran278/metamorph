@@ -1,9 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MetaMorph</title>
+  <title>MetaMorph · Công cụ nội bộ</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#0f7a64" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="google-doc.css" />
   <link rel="stylesheet" href="pdf-button.css" />
@@ -16,21 +18,33 @@
       .metadata-guide-body label { display: block; font-size: 12px; font-weight: 700; margin: 16px 0 8px; }
       .metadata-guide-body textarea { width: 100%; min-height: 220px; resize: vertical; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; line-height: 1.55; }
       .metadata-guide-body .metadata-guide-caution { padding: 12px; border-radius: 10px; background: var(--accent-soft); color: var(--ink-2); }
+      .brand { display: inline-flex; align-items: center; gap: 10px; }
+      .brand-icon { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 10px; }
+      .brand-name { display: flex; flex-direction: column; gap: 2px; line-height: 1.05; }
+      .brand-name small { color: var(--muted); font-size: 10px; font-weight: 500; letter-spacing: 0; }
+      .hero h1 { font-size: clamp(42px, 6vw, 76px); }
+      @media (max-width: 760px) {
+        .brand-name small { font-size: 9px; }
+        .hero { padding-top: 44px; }
+      }
     </style>
 </head>
 <body>
   <main class="shell">
     <nav class="nav glass-panel">
-      <div class="brand">MetaMorph</div>
-      <div class="nav-note">PDF metadata, under your control.</div>
+      <div class="brand">
+        <img class="brand-icon" src="favicon.svg" width="34" height="34" alt="" />
+        <span class="brand-name">MetaMorph<small>Công cụ nội bộ · PDF Metadata</small></span>
+      </div>
+      <div class="nav-note">PDF metadata tool</div>
     </nav>
 
     <section class="hero">
       <div>
-        <div class="kicker">PDF Metadata Utility</div>
-        <h1><span>Change the data.</span><span class="hero-accent">Keep the document.</span></h1>
+        <div class="kicker">METAMORPH / PDF</div>
+        <h1><span>Khôi phục</span><span class="hero-accent">metadata PDF.</span></h1>
       </div>
-      <p class="hero-copy">Paste a Google Docs link and add the matching PDFs. MetaMorph reads the metadata, checks every filename, and creates new files without touching your originals.</p>
+      <p class="hero-copy">Nạp Google Docs chứa metadata gốc, chọn các PDF đã chỉnh sửa và kiểm tra từng file trước khi xuất bản final.</p>
     </section>
 
     <section class="how-it-works glass-panel" aria-label="How MetaMorph works">
@@ -141,10 +155,6 @@ Không dùng dữ liệu ví dụ. Nếu trường nào không thể xác minh, 
       </div>
     </section>
 
-    <footer class="footer">
-      <span>MetaMorph · Built with the PlotFlow visual language</span>
-      <span>Web app</span>
-    </footer>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
