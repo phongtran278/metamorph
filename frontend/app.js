@@ -275,12 +275,14 @@ pdfInput.addEventListener('change', () => {
     const previewNames = pdfFiles.slice(0, 3).map((file) => file.name).join(', ');
     const extraCount = Math.max(0, pdfFiles.length - 3);
     pdfDescription.textContent = extraCount > 0 ? `${previewNames} + ${extraCount} more` : previewNames;
-    pdfFormat.textContent = `${pdfFiles.length} selected`;
-    pdfButton.textContent = 'Change PDF files';
+    pdfFormat.textContent = `${pdfFiles.length} file đã chọn`;
+    pdfFormat.hidden = false;
+    pdfButton.textContent = 'Đổi file PDF';
   } else {
-    pdfDescription.textContent = 'Choose the PDF files referenced in your Google Doc. You can select multiple PDFs in one go.';
-    pdfFormat.textContent = 'PDF';
-    pdfButton.textContent = 'Choose PDF files';
+    pdfDescription.textContent = 'Tải lên các PDF đã xuất từ Affinity, không phải PDF gốc. Có thể chọn nhiều file cùng lúc.';
+    pdfFormat.textContent = '';
+    pdfFormat.hidden = true;
+    pdfButton.textContent = 'Chọn các file PDF';
   }
 
   updateStatus();
@@ -293,11 +295,12 @@ clearButton.addEventListener('click', () => {
   googleDocUrlInput.value = '';
   pdfInput.value = '';
   metadataDescription.innerHTML = 'Use a normal Google Docs sharing link. Set the document to <strong>Anyone with the link · Viewer</strong> so MetaMorph can read it.';
-  pdfDescription.textContent = 'Choose the PDF files referenced in your Google Doc. You can select multiple PDFs in one go.';
+  pdfDescription.textContent = 'Tải lên các PDF đã xuất từ Affinity, không phải PDF gốc. Có thể chọn nhiều file cùng lúc.';
   metadataFormat.textContent = 'Waiting for link';
-  pdfFormat.textContent = 'PDF';
+  pdfFormat.textContent = '';
+  pdfFormat.hidden = true;
   metadataButton.textContent = 'Load metadata';
-  pdfButton.textContent = 'Choose PDF files';
+  pdfButton.textContent = 'Chọn các file PDF';
   updateStatus();
 });
 

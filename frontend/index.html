@@ -78,9 +78,9 @@
         <details class="metadata-guide">
           <summary>Tạo Google Docs từ PDF gốc <span aria-hidden="true">↗</span></summary>
           <div class="metadata-guide-body">
-            <p><strong>1.</strong> Tải tất cả PDF gốc (ví dụ 10 file) lên ChatGPT cùng prompt bên dưới.</p>
-            <p><strong>2.</strong> ChatGPT đọc metadata từng PDF, tạo <strong>một Google Docs online</strong> và trả link. Mỗi file có một khối riêng, tên file giữ nguyên.</p>
-            <p><strong>3.</strong> Chỉnh PDF bằng Affinity, giữ nguyên tên file. Bật chia sẻ Google Docs: <strong>Bất kỳ ai có đường liên kết · Người xem</strong>, rồi dán link vào MetaMorph.</p>
+            <p><strong>1.</strong> Tải các PDF gốc lên ChatGPT, dùng prompt bên dưới để trích metadata từng file.</p>
+            <p><strong>2.</strong> Tạo một Google Docs online chứa kết quả và lấy link. Mỗi file có một khối riêng, giữ nguyên tên file.</p>
+            <p><strong>3.</strong> Chia sẻ Google Docs: <strong>Bất kỳ ai có đường liên kết · Người xem</strong>, rồi dán link vào ô phía trên.</p>
             <label for="extract-prompt">Prompt để sao chép vào ChatGPT</label>
             <textarea id="extract-prompt" readonly rows="12" spellcheck="false">Tôi tải lên nhiều PDF GỐC (có thể 10 file hoặc hơn). Hãy đọc metadata TRỰC TIẾP từ từng PDF bằng công cụ đọc file; không suy đoán hay tạo dữ liệu.
 
@@ -110,21 +110,21 @@ Tạo MỘT Google Docs ONLINE chứa tất cả các khối trên và gửi lin
           <span class="step">MULTIPLE</span>
         </div>
 
-        <h2>Add the matching PDFs.</h2>
-        <p id="pdf-description">Choose the PDF files referenced in your Google Doc. You can select multiple PDFs in one go.</p>
+        <h2>Chọn PDF đã chỉnh sửa.</h2>
+        <p id="pdf-description">Tải lên các PDF đã xuất từ Affinity, không phải PDF gốc. Có thể chọn nhiều file cùng lúc.</p>
 
         <div class="action pdf-action-top">
           <input id="pdf-input" type="file" accept="application/pdf,.pdf" multiple hidden />
-          <button id="pdf-button" class="secondary" type="button">Choose PDF files</button>
-          <span id="pdf-format" class="format">PDF</span>
+          <button id="pdf-button" class="secondary" type="button">Chọn các file PDF</button>
+          <span id="pdf-format" class="format" hidden></span>
         </div>
 
         <div class="pdf-guide">
-          <div><strong>Keep originals safe</strong><span>MetaMorph creates new <code>_final.pdf</code> files.</span></div>
-          <div><strong>Match by filename</strong><span>Each edited PDF filename must exactly match its <code>File:</code> entry in the Google Doc.</span></div>
+          <div><strong>Đúng file đầu vào</strong><span>Chọn PDF <strong>đã sửa bằng Affinity</strong>. PDF gốc dùng để trích metadata ở bước 01.</span></div>
+          <div><strong>Giữ nguyên tên file</strong><span>Tên PDF sau Affinity phải trùng tên PDF gốc và dòng <code>File:</code> trong Google Docs để MetaMorph ghép đúng từng file.</span></div>
         </div>
 
-        <div class="helper-note"><strong>Private</strong><span>PDF processing happens in your browser. Your PDFs are not uploaded to MetaMorph.</span></div>
+        <div class="helper-note"><strong>Đầu ra</strong><span>MetaMorph tạo file <code>_final.pdf</code>; file PDF đã chỉnh sửa vẫn được giữ nguyên trên máy.</span></div>
 
 
       </article>
