@@ -84,7 +84,17 @@
             <label for="extract-prompt">Prompt để sao chép vào ChatGPT</label>
             <textarea id="extract-prompt" readonly rows="12" spellcheck="false">Tôi tải lên nhiều PDF GỐC (có thể 10 file hoặc hơn). Hãy đọc metadata TRỰC TIẾP từ từng PDF bằng công cụ đọc file; không suy đoán hay tạo dữ liệu.
 
-Xuất đúng một khối cho mỗi file, giữ nguyên tên file và giá trị gốc. Mỗi khối bắt đầu bằng File: và có các nhãn sau, mỗi nhãn một dòng:
+Xuất đúng một khối cho mỗi file và giữ nguyên giá trị gốc.
+
+QUY TẮC TÊN FILE — BẮT BUỘC:
+- Dòng File: phải dùng CHÍNH XÁC tên PDF mà tôi đã tải lên, ký tự-for-ký-tự.
+- KHÔNG tự đổi tên, chuẩn hóa, rút gọn, sửa chính tả hoặc tạo tên mới.
+- KHÔNG tự thêm hoặc bớt bất kỳ hậu tố nào như (1), (2), final, edited, output, copy, new...
+- KHÔNG dùng tên file tạm, tên nội bộ hoặc tên do hệ thống tự sinh.
+- Nếu không thể xác minh chính xác tên file gốc tôi đã tải lên, hãy liệt kê file đó ở mục “Tên file chưa xác minh” và KHÔNG tự đoán tên.
+- Tên ở dòng File: phải là tên sẽ được MetaMorph dùng để match tuyệt đối với PDF, nên chỉ khác 1 ký tự cũng được xem là sai.
+
+Mỗi khối bắt đầu bằng File: và có các nhãn sau, mỗi nhãn một dòng:
 
 File: [tên PDF chính xác]
 Title: [giá trị gốc hoặc [Không có / để trống] nếu xác minh là trống]
@@ -94,6 +104,12 @@ Application: [giá trị gốc hoặc [Không có / để trống] nếu xác mi
 PDF Producer: [giá trị gốc hoặc [Không có / để trống] nếu xác minh là trống]
 
 Nếu không đọc được trường nào, KHÔNG tự điền giá trị vào khối; liệt kê trường chưa xác minh riêng để tôi kiểm tra. Kiểm tra số lượng file và khối khớp nhau, không trộn metadata giữa các PDF.
+
+Trước khi tạo Google Docs, kiểm tra lần cuối:
+1) Số khối = số PDF đã tải lên.
+2) Mỗi dòng File: khớp tuyệt đối với đúng tên PDF tương ứng.
+3) Không có tên nào bị tự thêm (1), (2) hoặc bất kỳ hậu tố/prefix nào khác.
+4) Không được sửa tên file chỉ để tránh trùng, vì các file đã có tên khác nhau.
 
 Tạo MỘT Google Docs ONLINE chứa tất cả các khối trên và gửi link /document/d/.../edit thật để tôi dán vào MetaMorph; không xuất file tải xuống. Nếu không có quyền tạo Google Docs, nói rõ và đưa toàn bộ nội dung để tôi dán vào Google Docs online. Nhắc tôi bật chia sẻ “Bất kỳ ai có đường liên kết · Người xem”.</textarea>
             <p class="metadata-guide-caution"><strong>Lưu ý:</strong> Chỉ dùng metadata đọc được từ PDF gốc. MetaMorph hiện khôi phục các trường đã hỗ trợ; muốn xác nhận toàn bộ properties giống gốc, cần đối chiếu PDF gốc và PDF final bằng trình đọc PDF.</p>
@@ -124,7 +140,7 @@ Tạo MỘT Google Docs ONLINE chứa tất cả các khối trên và gửi lin
           <div><strong>Giữ nguyên tên file</strong><span>Tên PDF sau Affinity phải trùng tên PDF gốc và dòng <code>File:</code> trong Google Docs để MetaMorph ghép đúng từng file.</span></div>
         </div>
 
-        <div class="helper-note"><strong>Đầu ra</strong><span>MetaMorph tạo file <code>_final.pdf</code>; file PDF đã chỉnh sửa vẫn được giữ nguyên trên máy.</span></div>
+        <div class="helper-note"><strong>Đầu ra</strong><span>MetaMorph giữ nguyên chính xác tên PDF đầu vào khi tạo file trong ZIP; không tự thêm <code>final</code>, <code>edited</code>, <code>output</code> hoặc hậu tố khác.</span></div>
 
 
       </article>
