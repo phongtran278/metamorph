@@ -365,7 +365,7 @@ processButton.addEventListener('click', async () => {
       const pdfDoc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false });
       applyMetadata(pdfDoc, match.metadata);
       const outputBytes = await pdfDoc.save({ updateFieldAppearances: false });
-      const outputName = file.name.replace(/\.pdf$/i, '_final.pdf');
+      const outputName = file.name;
       zip.file(outputName, outputBytes);
       statusCopy.textContent = `${index + 1}/${pdfFiles.length} complete.`;
     }
